@@ -208,7 +208,6 @@ function App() {
   const [state, dispatch] = useReducer(reducer, undefined)
   const [help, setHelp] = useState(false)
   const [selected, setSelected] = useState<Square>()
-  const [drawn, setDrawn] = useState<FigureCard>()
   const [drawing, setDrawing] = useState(false)
   const agent = useMemo(() => new RandomAgent(), [])
 
@@ -256,8 +255,6 @@ function App() {
     if (!active || state.phase !== 'start' || drawing) return
 
     setDrawing(true)
-    const nextCard = state.figures.draw[state.figures.draw.length - 1]
-    setDrawn(nextCard)
     window.setTimeout(() => {
       dispatch({ type: 'begin' })
       setDrawing(false)
@@ -342,16 +339,6 @@ function App() {
             <small>Discard: {state.actions.discard.length}</small>
           </aside>
         </div>
-
-        {drawn && (
-          <section className="drawn-card" aria-live="polite">
-            <span>You drew</span>
-            <Card card={drawn} playable />
-            <button className="quiet" onClick={() => setDrawn(undefined)}>
-              Continue
-            </button>
-          </section>
-        )}
 
         <section className="hand">
           <h2>Your figure cards</h2>
