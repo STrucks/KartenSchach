@@ -63,18 +63,18 @@ export const skipFigureMove=(s:GameState,r:RandomSource):GameState=>{if(s.result
 export const playableAction=(s:GameState,c:ActionCard)=>{const me=s.players[s.current],you=s.players[other(s.current)];if(s.phase!=='actions'||me.actionLocked)return false;if(c.type==='trade')return me.figures.length>0&&you.figures.length>0;if(c.type==='reinforce')return Object.values(s.board).filter(p=>p?.color===s.current&&p.type==='pawn').length<8&&Array.from({length:8},(_,i)=>`${files[i]}${s.current==='white'?2:7}` as Square).some(x=>!s.board[x]);if(c.type==='block')return Object.values(s.board).some(p=>p?.color===other(s.current));if(c.type==='double')return !s.activeEffect&&allMoves(s.board,s.current).some(m=>!s.board[m.to])&&allMoves(s.board,s.current).length>1;return true}
 export const useAction=(s:GameState,id:string,r:RandomSource,target?:string):GameState=>{
  const me=s.players[s.current], c=me.actions.find(a=>a.id===id)
- if(!c||!playableAction(s,c))return {...s,message:'Diese Action-Karte ist jetzt nicht spielbar.'}
+ if(!c||!playableAction(s,c))return {...s,message:'This action card cannot be played right now.'}
  let figures=s.figures, players={...s.players,[s.current]:{...me,actions:me.actions.filter(a=>a.id!==id)}}
  const take=()=>{const [f,d]=draw(figures,r);figures=d;if(f)players={...players,[s.current]:{...players[s.current],figures:[...players[s.current].figures,f]}}}
  let board=s.board, effect=s.activeEffect, message:string|undefined
  if(c.type==='supply'){take();take()}
  if(c.type==='exchange'){const cards=me.figures.slice(0,3);players={...players,[s.current]:{...players[s.current],figures:me.figures.slice(cards.length)}};figures={...figures,discard:[...figures.discard,...cards]};cards.forEach(take)}
- if(c.type==='spy')message=`Gegnerische Figurenkarten: ${s.players[other(s.current)].figures.map(x=>x.type).join(', ')}`
+ if(c.type==='spy')message=`Opponent figure cards: ${s.players[other(s.current)].figures.map(x=>x.type).join(', ')}`
  if(c.type==='trade'){const foe=other(s.current),cards=players[foe].figures;const got=cards[Math.floor(r.next()*cards.length)];if(got){players={...players,[foe]:{...players[foe],figures:cards.filter(x=>x.id!==got.id)},[s.current]:{...players[s.current],figures:[...players[s.current].figures,got]}}}}
  if(c.type==='lock'){const foe=other(s.current);players={...players,[foe]:{...players[foe],actionLocked:true}}}
  if(c.type==='double')effect={type:'double'}
- if(c.type==='reinforce'){const t=target as Square;if(!t||t[1]!== (s.current==='white'?'2':'7')||board[t])return {...s,message:'WÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤hle ein freies Feld der zweiten Reihe.'};board={...board,[t]:{id:'reinforce-'+c.id,type:'pawn',color:s.current,moved:false}}}
- if(c.type==='block'){const p=board[target as Square];if(!p||p.color!==other(s.current))return {...s,message:'WÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤hle eine gegnerische Figur.'};const foe=other(s.current);players={...players,[foe]:{...players[foe],blockedPieceId:p.id}}}
+ if(c.type==='reinforce'){const t=target as Square;if(!t||t[1]!== (s.current==='white'?'2':'7')||board[t])return {...s,message:'Choose an empty square on your second rank.'};board={...board,[t]:{id:'reinforce-'+c.id,type:'pawn',color:s.current,moved:false}}}
+ if(c.type==='block'){const p=board[target as Square];if(!p||p.color!==other(s.current))return {...s,message:'Choose an opposing piece.'};const foe=other(s.current);players={...players,[foe]:{...players[foe],blockedPieceId:p.id}}}
  return {...s,board,players,figures,actions:{...s.actions,discard:[...s.actions.discard,c]},activeEffect:effect,message}
 };
 export type AgentDecision={cardId:string;move:Move}|{end:true}

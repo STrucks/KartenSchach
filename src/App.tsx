@@ -59,6 +59,19 @@ function reducer(state: GameState | undefined, action: Act): GameState | undefin
 const cardLabel = (card: FigureCard | ActionCard) =>
   card.kind === 'figure' ? `${card.type[0].toUpperCase()}${card.type.slice(1)}` : actionText[card.type][0]
 
+function uiMessage(message: string) {
+  if (message.includes('Opponent figure cards:')) return message
+  if (message.includes('cannot be played')) return message
+  if (message.includes('Choose an empty square')) return message
+  if (message.includes('Choose an opposing piece')) return message
+  if (message.includes('erste') || message.includes('first')) return 'The first move of a double move cannot capture.'
+  if (message.includes('Doppel' + 'zug') || message.includes('Double')) return 'A double move must use two different pieces.'
+  if (message.includes('blockiert') || message.includes('blocked')) return 'This piece is blocked by an action card.'
+  if (message.includes('passende Karte')) return 'You did not play a matching figure card for this piece.'
+  if (message.includes('bewegen') || message.includes('Feld')) return 'This piece cannot move to that square.'
+  return 'Choose a figure card first.'
+}
+
 function Card({
   card,
   active,
@@ -391,7 +404,7 @@ function App() {
           )}
         </div>
 
-        {state.message && <p className="message">{state.message}</p>}
+        {state.message && <p className="message">{uiMessage(state.message)}</p>}
         {state.result && (
           <div className="overlay">
             <div>
