@@ -144,6 +144,12 @@ aside {
   font-size: 15px;
 }
 
+.card-wrap {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+
 .card {
   width: 92px;
   min-height: 128px;
@@ -180,6 +186,61 @@ aside {
   color: #70370f;
   border-color: #c78044;
   font-size: 12px;
+}
+
+.card-info {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid #c78044;
+  border-radius: 999px;
+  background: #fffaf4;
+  color: #70370f;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.card-info.active {
+  background: #70370f;
+  color: #fffaf4;
+}
+
+.card-bubble {
+  position: absolute;
+  z-index: 8;
+  right: -7px;
+  bottom: calc(100% + 8px);
+  width: 210px;
+  padding: 10px 11px;
+  background: #fffaf4;
+  border: 2px solid #c78044;
+  border-radius: 6px;
+  color: #4f270b;
+  box-shadow: 0 8px 20px #0003;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.card-bubble::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  bottom: -8px;
+  width: 12px;
+  height: 12px;
+  background: #fffaf4;
+  border-right: 2px solid #c78044;
+  border-bottom: 2px solid #c78044;
+  transform: rotate(45deg);
 }
 
 .card.playable {
@@ -385,6 +446,22 @@ aside {
   .card-art {
     width: 60px;
     height: 84px;
+  }
+
+  .card-info {
+    top: 7px;
+    right: 7px;
+  }
+
+  .card-bubble {
+    right: auto;
+    left: 0;
+    width: min(230px, calc(100vw - 42px));
+  }
+
+  .card-bubble::after {
+    right: auto;
+    left: 18px;
   }
 }
 

@@ -95,32 +95,55 @@ function Card({
   active,
   playable,
   disabled,
+  infoOpen,
+  onInfoClick,
   onClick,
 }: {
   card: FigureCard | ActionCard
   active?: boolean
   playable?: boolean
   disabled?: boolean
+  infoOpen?: boolean
+  onInfoClick?: () => void
   onClick?: () => void
 }) {
   const label = cardLabel(card)
 
   return (
-    <button
-      onClick={onClick}
-      className={`card ${card.kind} ${active ? 'active' : ''} ${playable ? 'playable' : ''}`}
-      disabled={disabled}
-      title={card.kind === 'action' ? actionText[card.type][1] : label}
-    >
-      {card.kind === 'figure' ? (
-        <>
-          <img className="card-art" src={figureArt[card.type]} alt="" draggable={false} />
+    <span className="card-wrap">
+      <button
+        onClick={onClick}
+        className={`card ${card.kind} ${active ? 'active' : ''} ${playable ? 'playable' : ''}`}
+        disabled={disabled}
+        title={card.kind === 'action' ? actionText[card.type][1] : label}
+      >
+        {card.kind === 'figure' ? (
+          <>
+            <img className="card-art" src={figureArt[card.type]} alt="" draggable={false} />
+            <span>{label}</span>
+          </>
+        ) : (
           <span>{label}</span>
+        )}
+      </button>
+      {card.kind === 'action' && onInfoClick && (
+        <>
+          <button
+            className={`card-info ${infoOpen ? 'active' : ''}`}
+            type="button"
+            aria-label={`Show ${label} help`}
+            aria-expanded={infoOpen}
+            onClick={(event) => {
+              event.stopPropagation()
+              onInfoClick()
+            }}
+          >
+            i
+          </button>
+          {infoOpen && <span className="card-bubble">{actionText[card.type][1]}</span>}
         </>
-      ) : (
-        <span>{label}</span>
       )}
-    </button>
+    </span>
   )
 }
 
@@ -313,7 +336,20 @@ function App() {
   const [selected, setSelected] = useState<Square>()
   const [drawing, setDrawing] = useState(false)
   const [pendingAction, setPendingAction] = useState<PendingAction>()
+  const [openActionInfoId, setOpenActionInfoId] = useState<string>()
   const agent = useMemo(() => new RandomAgent(), [])
+
+  useEffect(() => {
+    if (!openActionInfoId) return
+
+    const closeInfo = (event: PointerEvent) => {
+      if (event.target instanceof Element && event.target.closest('.card-wrap')) return
+      setOpenActionInfoId(undefined)
+    }
+
+    window.addEventListener('pointerdown', closeInfo)
+    return () => window.removeEventListener('pointerdown', closeInfo)
+  }, [openActionInfoId])
 
   useEffect(() => {
     if (!state || state.result || state.current !== 'black' || state.phase !== 'start') return
@@ -374,6 +410,7 @@ function App() {
   }
 
   const act = (card: ActionCard) => {
+    setOpenActionInfoId(undefined)
     if (card.type === 'exchange') {
       setPendingAction({ type: 'exchange', card, selectedIds: [] })
       return
@@ -482,6 +519,8 @@ function App() {
                   card={card}
                   playable={playableAction(state, card)}
                   disabled={!active || !playableAction(state, card)}
+                  infoOpen={openActionInfoId === card.id}
+                  onInfoClick={() => setOpenActionInfoId((current) => (current === card.id ? undefined : card.id))}
                   onClick={() => active && playableAction(state, card) && act(card)}
                 />
               ))}
