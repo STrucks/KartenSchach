@@ -63,14 +63,16 @@ function Card({
   card,
   active,
   playable,
+  disabled,
   onClick,
 }: {
   card: FigureCard | ActionCard
   active?: boolean
   playable?: boolean
+  disabled?: boolean
   onClick?: () => void
 }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: card.id })
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: card.id, disabled })
   const label = cardLabel(card)
 
   return (
@@ -80,6 +82,7 @@ function Card({
       {...listeners}
       onClick={onClick}
       className={`card ${card.kind} ${active ? 'active' : ''} ${playable ? 'playable' : ''}`}
+      disabled={disabled}
       style={{ transform: transform ? `translate(${transform.x}px,${transform.y}px)` : undefined }}
       title={card.kind === 'action' ? actionText[card.type][1] : label}
     >
@@ -106,6 +109,7 @@ function DeckBack({
   label,
   button,
   drawing,
+  highlight,
   disabled,
   onClick,
 }: {
@@ -114,6 +118,7 @@ function DeckBack({
   label: string
   button?: boolean
   drawing?: boolean
+  highlight?: boolean
   disabled?: boolean
   onClick?: () => void
 }) {
@@ -127,7 +132,7 @@ function DeckBack({
 
   if (button) {
     return (
-      <button className={`deck ${drawing ? 'drawing' : ''}`} onClick={onClick} disabled={disabled}>
+      <button className={`deck ${drawing ? 'drawing' : ''} ${highlight ? 'highlight' : ''}`} onClick={onClick} disabled={disabled}>
         {content}
       </button>
     )
@@ -248,6 +253,8 @@ function App() {
 
   const me = state.players.white
   const active = state.current === 'white'
+  const mustDraw = active && state.phase === 'start'
+  const canSelectFigureCards = active && !mustDraw
   const selectedCard = me.figures.find((card) => card.id === state.selectedCardId)
   const opponentCardCount = state.players.black.figures.length + state.players.black.actions.length
 
@@ -307,6 +314,7 @@ function App() {
               label={state.phase === 'start' && active ? 'Draw card' : 'Cards'}
               button
               drawing={drawing}
+              highlight={mustDraw}
               disabled={!active || state.phase !== 'start'}
               onClick={drawCard}
             />
@@ -349,7 +357,8 @@ function App() {
                 card={card}
                 active={card.id === state.selectedCardId}
                 playable={playableFigures(state, 'white').some((item) => item.id === card.id)}
-                onClick={() => active && dispatch({ type: 'select', id: card.id })}
+                disabled={!canSelectFigureCards}
+                onClick={() => canSelectFigureCards && dispatch({ type: 'select', id: card.id })}
               />
             ))}
           </div>

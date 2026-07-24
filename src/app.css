@@ -248,6 +248,20 @@ aside {
   animation: drawPulse .42s ease-in-out;
 }
 
+.deck.highlight {
+  border-color: #25a88e;
+  box-shadow: 0 0 0 4px #25a88e55, 0 0 18px #25a88e88;
+}
+
+.card:disabled {
+  cursor: default;
+  opacity: .45;
+}
+
+.card.figure:disabled {
+  transform: none;
+}
+
 @media (max-width: 700px) {
   .table {
     grid-template-columns: 1fr;
