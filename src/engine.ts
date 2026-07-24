@@ -78,4 +78,4 @@ export const useAction=(s:GameState,id:string,r:RandomSource,target?:string):Gam
 };
 export type AgentDecision={cardId:string;move:Move}|{end:true}
 export interface GameAgent { chooseTurn(state:GameState,random:RandomSource):Promise<AgentDecision> }
-export class RandomAgent implements GameAgent { async chooseTurn(s:GameState,r:RandomSource):Promise<AgentDecision>{const candidates=s.players[s.current].figures.flatMap(c=>cardMoves(s.board,s.current,c.type).map(move=>({cardId:c.id,move})));return candidates.length?candidates[Math.floor(r.next()*candidates.length)]:{end:true}} }
+export class RandomAgent implements GameAgent { async chooseTurn(s:GameState,r:RandomSource):Promise<AgentDecision>{const candidates=s.players[s.current].figures.flatMap(c=>cardMoves(s.board,s.current,c.type).map(move=>({cardId:c.id,move})));const captures=candidates.filter(({move})=>s.board[move.to]?.color===other(s.current));const choices=captures.length?captures:candidates;return choices.length?choices[Math.floor(r.next()*choices.length)]:{end:true}} }
