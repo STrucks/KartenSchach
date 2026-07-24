@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" role="img" aria-label="Bishop card">
+  <rect width="160" height="224" rx="12" fill="#f7fbfa"/>
+  <rect x="8" y="8" width="144" height="208" rx="9" fill="#fff5e8" stroke="#a55a19" stroke-width="4"/>
+  <circle cx="80" cy="49" r="14" fill="#5c2b0c"/>
+  <path d="M80 65c28 24 34 56 10 83H70C46 121 52 89 80 65z" fill="#5c2b0c"/>
+  <path d="M88 82l-19 43" stroke="#fff5e8" stroke-width="7" stroke-linecap="round"/>
+  <path d="M52 158h56l14 24H38z" fill="#5c2b0c"/>
+  <path d="M32 187h96" stroke="#5c2b0c" stroke-width="14" stroke-linecap="round"/>
+  <text x="80" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#5c2b0c">BISHOP</text>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" role="img" aria-label="Queen card">
+  <rect width="160" height="224" rx="12" fill="#f7fbfa"/>
+  <rect x="8" y="8" width="144" height="208" rx="9" fill="#fff1f5" stroke="#9b3157" stroke-width="4"/>
+  <circle cx="45" cy="56" r="9" fill="#5d1731"/>
+  <circle cx="80" cy="42" r="10" fill="#5d1731"/>
+  <circle cx="115" cy="56" r="9" fill="#5d1731"/>
+  <path d="M41 70l24 30 15-42 15 42 24-30-14 76H55z" fill="#5d1731"/>
+  <path d="M52 155h56l13 27H39z" fill="#5d1731"/>
+  <path d="M31 187h98" stroke="#5d1731" stroke-width="14" stroke-linecap="round"/>
+  <text x="80" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#5d1731">QUEEN</text>
+</svg>

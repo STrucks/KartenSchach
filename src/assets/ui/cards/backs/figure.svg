@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" role="img" aria-label="Figure card back">
+  <rect width="160" height="224" rx="12" fill="#123b37"/>
+  <rect x="10" y="10" width="140" height="204" rx="9" fill="#1f6b63" stroke="#d6ece9" stroke-width="4"/>
+  <path d="M31 36h98v152H31z" fill="none" stroke="#d6ece9" stroke-width="5"/>
+  <path d="M80 56l18 36 40 6-29 28 7 40-36-19-36 19 7-40-29-28 40-6z" fill="#d6ece9"/>
+  <text x="80" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#d6ece9">FIGURE</text>
+</svg>

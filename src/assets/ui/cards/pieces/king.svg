@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" role="img" aria-label="King card">
+  <rect width="160" height="224" rx="12" fill="#f7fbfa"/>
+  <rect x="8" y="8" width="144" height="208" rx="9" fill="#f2f0ff" stroke="#5b3ba6" stroke-width="4"/>
+  <path d="M80 35v45M61 54h38" stroke="#2e1a60" stroke-width="10" stroke-linecap="round"/>
+  <path d="M59 92c3-22 15-29 21-29s18 7 21 29l12 58H47z" fill="#2e1a60"/>
+  <path d="M50 157h60l14 25H36z" fill="#2e1a60"/>
+  <path d="M31 187h98" stroke="#2e1a60" stroke-width="14" stroke-linecap="round"/>
+  <text x="80" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#2e1a60">KING</text>
+</svg>

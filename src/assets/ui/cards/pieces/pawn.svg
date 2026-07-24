@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" role="img" aria-label="Pawn card">
+  <rect width="160" height="224" rx="12" fill="#f7fbfa"/>
+  <rect x="8" y="8" width="144" height="208" rx="9" fill="#e6f4f1" stroke="#2c6f68" stroke-width="4"/>
+  <circle cx="80" cy="64" r="22" fill="#143a36"/>
+  <path d="M54 132c5-31 12-43 26-43s21 12 26 43z" fill="#143a36"/>
+  <path d="M45 145h70l11 24H34z" fill="#143a36"/>
+  <path d="M31 184h98" stroke="#143a36" stroke-width="16" stroke-linecap="round"/>
+  <text x="80" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#143a36">PAWN</text>
+</svg>

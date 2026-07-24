@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" role="img" aria-label="Action card back">
+  <rect width="160" height="224" rx="12" fill="#6b3411"/>
+  <rect x="10" y="10" width="140" height="204" rx="9" fill="#9a521e" stroke="#ffe4c7" stroke-width="4"/>
+  <path d="M40 62h80M40 90h80M40 118h80M40 146h80" stroke="#ffe4c7" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="80" cy="104" r="33" fill="none" stroke="#ffe4c7" stroke-width="7"/>
+  <text x="80" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#ffe4c7">ACTION</text>
+</svg>

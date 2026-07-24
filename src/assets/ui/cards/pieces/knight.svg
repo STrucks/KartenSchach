@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" role="img" aria-label="Knight card">
+  <rect width="160" height="224" rx="12" fill="#f7fbfa"/>
+  <rect x="8" y="8" width="144" height="208" rx="9" fill="#edf2ff" stroke="#344c88" stroke-width="4"/>
+  <path d="M53 167h72l-10-30c-5-15-17-22-31-24l8-20 23 12 8-21-26-34H72L47 72l16 16-14 22c-11 17-9 37 4 57z" fill="#182957"/>
+  <circle cx="92" cy="74" r="4" fill="#edf2ff"/>
+  <path d="M62 96l21-7" stroke="#edf2ff" stroke-width="5" stroke-linecap="round"/>
+  <path d="M35 184h92" stroke="#182957" stroke-width="16" stroke-linecap="round"/>
+  <text x="80" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#182957">KNIGHT</text>
+</svg>
