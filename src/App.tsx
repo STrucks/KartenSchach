@@ -50,6 +50,16 @@ const figureArt: Record<FigureCardType, string> = {
   joker: jokerCard,
 }
 
+const figureSortOrder: Record<FigureCardType, number> = {
+  pawn: 0,
+  knight: 1,
+  bishop: 2,
+  rook: 3,
+  queen: 4,
+  king: 5,
+  joker: 6,
+}
+
 function reducer(state: GameState | undefined, action: Act): GameState | undefined {
   if (action.type === 'start') return newGame(random)
   if (!state) return state
@@ -62,6 +72,11 @@ function reducer(state: GameState | undefined, action: Act): GameState | undefin
 
 const cardLabel = (card: FigureCard | ActionCard) =>
   card.kind === 'figure' ? `${card.type[0].toUpperCase()}${card.type.slice(1)}` : actionText[card.type][0]
+
+const sortedFigures = (cards: FigureCard[]) =>
+  [...cards].sort((a, b) => figureSortOrder[a.type] - figureSortOrder[b.type] || cardLabel(a).localeCompare(cardLabel(b)))
+
+const sortedActions = (cards: ActionCard[]) => [...cards].sort((a, b) => cardLabel(a).localeCompare(cardLabel(b)))
 
 function uiMessage(message: string) {
   if (message.includes('Opponent figure cards:')) return message
@@ -260,7 +275,7 @@ function ActionDialog({
           <>
             <p>Select one to three figure cards to discard and redraw.</p>
             <div className="dialog-cards">
-              {figureCards.map((card) => (
+              {sortedFigures(figureCards).map((card) => (
                 <Card
                   key={card.id}
                   card={card}
@@ -282,7 +297,7 @@ function ActionDialog({
               <div>
                 <strong>Your card</strong>
                 <div className="dialog-cards compact">
-                  {figureCards.map((card) => (
+                  {sortedFigures(figureCards).map((card) => (
                     <Card
                       key={card.id}
                       card={card}
@@ -472,7 +487,7 @@ function App() {
           <section className="hand">
             <h2>Your figure cards</h2>
             <div>
-              {me.figures.map((card) => (
+            {sortedFigures(me.figures).map((card) => (
                 <Card
                   key={card.id}
                   card={card}
@@ -486,7 +501,7 @@ function App() {
 
             <h2>Your action cards</h2>
             <div>
-              {me.actions.map((card) => (
+              {sortedActions(me.actions).map((card) => (
                 <Card
                   key={card.id}
                   card={card}
