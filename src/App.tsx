@@ -36,6 +36,10 @@ type Act =
   | { type: 'action'; id: string; target?: string }
   | { type: 'end' }
 
+type PendingAction =
+  | { type: 'exchange'; card: ActionCard; selectedIds: string[] }
+  | { type: 'trade'; card: ActionCard; offered: FigureCard; selectedId?: string }
+
 const figureArt: Record<FigureCardType, string> = {
   pawn: pawnCard,
   knight: knightCard,
@@ -77,15 +81,17 @@ function Card({
   active,
   playable,
   disabled,
+  dragDisabled,
   onClick,
 }: {
   card: FigureCard | ActionCard
   active?: boolean
   playable?: boolean
   disabled?: boolean
+  dragDisabled?: boolean
   onClick?: () => void
 }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: card.id, disabled })
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: card.id, disabled: disabled || dragDisabled })
   const label = cardLabel(card)
 
   return (
@@ -222,11 +228,91 @@ function Help({ close }: { close: () => void }) {
   )
 }
 
+function ActionDialog({
+  pending,
+  figureCards,
+  onToggleExchange,
+  onSelectTrade,
+  onCancel,
+  onConfirm,
+}: {
+  pending: PendingAction
+  figureCards: FigureCard[]
+  onToggleExchange: (id: string) => void
+  onSelectTrade: (id: string) => void
+  onCancel: () => void
+  onConfirm: () => void
+}) {
+  const isExchange = pending.type === 'exchange'
+  const canConfirm = isExchange ? pending.selectedIds.length > 0 : !!pending.selectedId
+
+  return (
+    <div className="modal">
+      <section className="action-dialog">
+        <div className="dialog-head">
+          <h2>{isExchange ? 'Exchange cards' : 'Trade cards'}</h2>
+          <button className="quiet" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
+
+        {isExchange ? (
+          <>
+            <p>Select one to three figure cards to discard and redraw.</p>
+            <div className="dialog-cards">
+              {figureCards.map((card) => (
+                <Card
+                  key={card.id}
+                  card={card}
+                  active={pending.selectedIds.includes(card.id)}
+                  dragDisabled
+                  onClick={() => onToggleExchange(card.id)}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <p>The opponent offers this card. Choose one of yours to give back.</p>
+            <div className="trade-offer">
+              <div>
+                <strong>Offer</strong>
+                <Card card={pending.offered} active dragDisabled />
+              </div>
+              <div>
+                <strong>Your card</strong>
+                <div className="dialog-cards compact">
+                  {figureCards.map((card) => (
+                    <Card
+                      key={card.id}
+                      card={card}
+                      active={pending.selectedId === card.id}
+                      dragDisabled
+                      onClick={() => onSelectTrade(card.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        <div className="dialog-actions">
+          <button onClick={onConfirm} disabled={!canConfirm}>
+            Confirm
+          </button>
+        </div>
+      </section>
+    </div>
+  )
+}
+
 function App() {
   const [state, dispatch] = useReducer(reducer, undefined)
   const [help, setHelp] = useState(false)
   const [selected, setSelected] = useState<Square>()
   const [drawing, setDrawing] = useState(false)
+  const [pendingAction, setPendingAction] = useState<PendingAction>()
   const agent = useMemo(() => new RandomAgent(), [])
 
   useEffect(() => {
@@ -288,12 +374,32 @@ function App() {
   }
 
   const act = (card: ActionCard) => {
+    if (card.type === 'exchange') {
+      setPendingAction({ type: 'exchange', card, selectedIds: [] })
+      return
+    }
+    if (card.type === 'trade') {
+      const opponentFigures = state.players.black.figures
+      const offered = opponentFigures[Math.floor(random.next() * opponentFigures.length)]
+      if (offered) setPendingAction({ type: 'trade', card, offered })
+      return
+    }
     const selector = card.type === 'reinforce' ? 'input[data-reinforce]' : 'input[data-block]'
     const target =
       card.type === 'reinforce' || card.type === 'block'
         ? window.document.querySelector<HTMLInputElement>(selector)?.value
         : undefined
     dispatch({ type: 'action', id: card.id, target })
+  }
+
+  const confirmPendingAction = () => {
+    if (!pendingAction) return
+    if (pendingAction.type === 'exchange') {
+      dispatch({ type: 'action', id: pendingAction.card.id, target: pendingAction.selectedIds.join(',') })
+    } else if (pendingAction.selectedId) {
+      dispatch({ type: 'action', id: pendingAction.card.id, target: `${pendingAction.offered.id}:${pendingAction.selectedId}` })
+    }
+    setPendingAction(undefined)
   }
 
   return (
@@ -381,7 +487,13 @@ function App() {
             <h2>Your action cards</h2>
             <div>
               {me.actions.map((card) => (
-                <Card key={card.id} card={card} playable={playableAction(state, card)} onClick={() => active && act(card)} />
+                <Card
+                  key={card.id}
+                  card={card}
+                  playable={playableAction(state, card)}
+                  disabled={!active || !playableAction(state, card)}
+                  onClick={() => active && playableAction(state, card) && act(card)}
+                />
               ))}
             </div>
 
@@ -413,6 +525,28 @@ function App() {
               <button onClick={() => dispatch({ type: 'start' })}>New game</button>
             </div>
           </div>
+        )}
+        {pendingAction && (
+          <ActionDialog
+            pending={pendingAction}
+            figureCards={me.figures}
+            onToggleExchange={(id) =>
+              setPendingAction((current) => {
+                if (!current || current.type !== 'exchange') return current
+                const selectedIds = current.selectedIds.includes(id)
+                  ? current.selectedIds.filter((selectedId) => selectedId !== id)
+                  : current.selectedIds.length < 3
+                    ? [...current.selectedIds, id]
+                    : current.selectedIds
+                return { ...current, selectedIds }
+              })
+            }
+            onSelectTrade={(id) =>
+              setPendingAction((current) => (current && current.type === 'trade' ? { ...current, selectedId: id } : current))
+            }
+            onCancel={() => setPendingAction(undefined)}
+            onConfirm={confirmPendingAction}
+          />
         )}
         {help && <Help close={() => setHelp(false)} />}
       </main>

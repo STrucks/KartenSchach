@@ -231,7 +231,8 @@ aside {
 }
 
 .overlay,
-.help {
+.help,
+.modal {
   position: fixed;
   z-index: 10;
   inset: 0;
@@ -247,6 +248,70 @@ aside {
   background: #fff;
   border-radius: 6px;
   text-align: center;
+}
+
+.modal {
+  z-index: 12;
+}
+
+.action-dialog {
+  width: min(860px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 18px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 12px 34px #0005;
+}
+
+.dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dialog-head h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.action-dialog p {
+  margin: 10px 0 14px;
+}
+
+.dialog-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dialog-cards.compact {
+  max-height: 310px;
+  overflow: auto;
+}
+
+.trade-offer {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.trade-offer strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.dialog-actions button:disabled {
+  cursor: default;
+  opacity: .55;
 }
 
 .start {
@@ -303,6 +368,10 @@ aside {
 
   .player-panel {
     flex-direction: column;
+  }
+
+  .trade-offer {
+    grid-template-columns: 1fr;
   }
 
   .hand,
