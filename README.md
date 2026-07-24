@@ -49,6 +49,28 @@ Create a production build:
 npm run build
 ```
 
+## Deploy To GitHub Pages
+
+This repository is configured for GitHub Pages at:
+
+```text
+https://STrucks.github.io/KartenSchach/
+```
+
+The deployment workflow is in `.github/workflows/deploy.yml`. It runs automatically whenever changes are pushed to `main`, and it can also be started manually from the GitHub Actions tab.
+
+Before the first deployment, open the repository on GitHub and set:
+
+```text
+Settings -> Pages -> Build and deployment -> Source -> GitHub Actions
+```
+
+Then push `main`:
+
+```powershell
+git push origin main
+```
+
 ## Lint
 
 Run ESLint:
