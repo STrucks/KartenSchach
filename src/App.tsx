@@ -1,4 +1,3 @@
-import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core'
 import { Chessboard } from 'react-chessboard'
 import { useEffect, useMemo, useReducer, useState } from 'react'
 import actionBack from './assets/ui/cards/backs/action.svg'
@@ -96,28 +95,21 @@ function Card({
   active,
   playable,
   disabled,
-  dragDisabled,
   onClick,
 }: {
   card: FigureCard | ActionCard
   active?: boolean
   playable?: boolean
   disabled?: boolean
-  dragDisabled?: boolean
   onClick?: () => void
 }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: card.id, disabled: disabled || dragDisabled })
   const label = cardLabel(card)
 
   return (
     <button
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
       onClick={onClick}
       className={`card ${card.kind} ${active ? 'active' : ''} ${playable ? 'playable' : ''}`}
       disabled={disabled}
-      style={{ transform: transform ? `translate(${transform.x}px,${transform.y}px)` : undefined }}
       title={card.kind === 'action' ? actionText[card.type][1] : label}
     >
       {card.kind === 'figure' ? (
@@ -130,11 +122,6 @@ function Card({
       )}
     </button>
   )
-}
-
-function BoardDropTarget() {
-  const { setNodeRef } = useDroppable({ id: 'board' })
-  return <div ref={setNodeRef} className="board-drop" aria-hidden="true" />
 }
 
 function DeckBack({
@@ -280,7 +267,6 @@ function ActionDialog({
                   key={card.id}
                   card={card}
                   active={pending.selectedIds.includes(card.id)}
-                  dragDisabled
                   onClick={() => onToggleExchange(card.id)}
                 />
               ))}
@@ -292,7 +278,7 @@ function ActionDialog({
             <div className="trade-offer">
               <div>
                 <strong>Offer</strong>
-                <Card card={pending.offered} active dragDisabled />
+                <Card card={pending.offered} active />
               </div>
               <div>
                 <strong>Your card</strong>
@@ -302,7 +288,6 @@ function ActionDialog({
                       key={card.id}
                       card={card}
                       active={pending.selectedId === card.id}
-                      dragDisabled
                       onClick={() => onSelectTrade(card.id)}
                     />
                   ))}
@@ -418,15 +403,6 @@ function App() {
   }
 
   return (
-    <DndContext
-      onDragEnd={({ active: drag, over }) => {
-        if (over?.id === 'board') {
-          const card = [...me.figures, ...me.actions].find((item) => item.id === drag.id)
-          if (card?.kind === 'figure') dispatch({ type: 'select', id: card.id })
-          else if (card) act(card)
-        }
-      }}
-    >
       <main>
         <header>
           <strong>Card Chess</strong>
@@ -473,7 +449,6 @@ function App() {
               boardOrientation="white"
               arePiecesDraggable={active && !!selectedCard}
             />
-            <BoardDropTarget />
           </div>
 
           <aside>
@@ -565,7 +540,6 @@ function App() {
         )}
         {help && <Help close={() => setHelp(false)} />}
       </main>
-    </DndContext>
   )
 }
 

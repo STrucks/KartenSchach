@@ -12,7 +12,6 @@ The binding game rules are documented in [`RULESET.md`](RULESET.md). If implemen
 - Vitest
 - Testing Library
 - `react-chessboard` for board presentation
-- `@dnd-kit/core` for card drag-and-drop
 
 ## Requirements
 
@@ -102,5 +101,5 @@ npm test
 - There is no check, checkmate, pinned-piece, or king-safety validation.
 - Capturing the opposing king ends the game.
 - The player must draw a figure card at the beginning of their turn.
-- Cards can be clicked or dragged to the central play zone.
+- Cards are selected by clicking or tapping them.
 - Some rule-compliant UI flows are still simplified, especially action-card choices and promotion.
