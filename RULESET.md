@@ -622,6 +622,16 @@ Ein Zug endet, wenn:
 
 Nicht ausgespielte Karten bleiben auf der Hand.
 
+## 25.1 Freiwilliges Zugende ohne Figurenkarte
+
+Nach dem regulären Ziehen der Figurenkarte darf ein Spieler seinen Zug freiwillig beenden, ohne eine Figurenkarte auszuspielen und ohne eine Figur zu bewegen.
+
+In diesem Fall zieht der Spieler sofort eine Action-Karte vom gemeinsamen Action-Kartenstapel und nimmt sie auf die Hand.
+
+Anschließend endet der Zug und der Gegner ist an der Reihe.
+
+Diese Regel gilt nur, wenn in diesem Zug noch keine Figurenkarte für einen Schachzug ausgespielt wurde.
+
 ---
 
 # 26. Ende der Partie

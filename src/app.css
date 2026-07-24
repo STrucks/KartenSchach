@@ -207,8 +207,18 @@ aside {
   border-left: 4px solid #d16919;
 }
 
+.turn-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 4px 0 10px;
+}
+
 .end {
-  margin-top: 10px;
+  min-width: 142px;
+  padding: 13px 18px;
+  background: #9a521e;
+  box-shadow: 0 3px 10px #0002;
+  font-weight: 800;
 }
 
 .overlay,

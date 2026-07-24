@@ -15,13 +15,13 @@ import {
   RandomAgent,
   actionText,
   beginTurn,
-  endTurn,
   newGame,
   playableAction,
   playableFigures,
   playMove,
   seeded,
   selectFigureCard,
+  skipFigureMove,
   useAction,
 } from './engine'
 import './app.css'
@@ -53,7 +53,7 @@ function reducer(state: GameState | undefined, action: Act): GameState | undefin
   if (action.type === 'select') return selectFigureCard(state, action.id)
   if (action.type === 'move') return playMove(state, action.move, random)
   if (action.type === 'action') return useAction(state, action.id, random, action.target)
-  return endTurn(state)
+  return skipFigureMove(state, random)
 }
 
 const cardLabel = (card: FigureCard | ActionCard) =>
@@ -255,6 +255,7 @@ function App() {
   const active = state.current === 'white'
   const mustDraw = active && state.phase === 'start'
   const canSelectFigureCards = active && !mustDraw
+  const canEndWithoutMove = active && (state.phase === 'actions' || state.phase === 'move')
   const selectedCard = me.figures.find((card) => card.id === state.selectedCardId)
   const opponentCardCount = state.players.black.figures.length + state.players.black.actions.length
 
@@ -348,6 +349,14 @@ function App() {
           </aside>
         </div>
 
+        {canEndWithoutMove && (
+          <div className="turn-actions">
+            <button className="end" onClick={() => dispatch({ type: 'end' })}>
+              End turn
+            </button>
+          </div>
+        )}
+
         <section className="hand">
           <h2>Your figure cards</h2>
           <div>
@@ -381,11 +390,6 @@ function App() {
         </section>
 
         {state.message && <p className="message">{state.message}</p>}
-        {active && state.phase === 'actions' && (
-          <button className="end" onClick={() => dispatch({ type: 'end' })}>
-            End turn
-          </button>
-        )}
         {state.result && (
           <div className="overlay">
             <div>
