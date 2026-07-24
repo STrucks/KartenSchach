@@ -349,45 +349,47 @@ function App() {
           </aside>
         </div>
 
-        {canEndWithoutMove && (
-          <div className="turn-actions">
-            <button className="end" onClick={() => dispatch({ type: 'end' })}>
-              End turn
-            </button>
-          </div>
-        )}
+        <div className="player-panel">
+          <section className="hand">
+            <h2>Your figure cards</h2>
+            <div>
+              {me.figures.map((card) => (
+                <Card
+                  key={card.id}
+                  card={card}
+                  active={card.id === state.selectedCardId}
+                  playable={playableFigures(state, 'white').some((item) => item.id === card.id)}
+                  disabled={!canSelectFigureCards}
+                  onClick={() => canSelectFigureCards && dispatch({ type: 'select', id: card.id })}
+                />
+              ))}
+            </div>
 
-        <section className="hand">
-          <h2>Your figure cards</h2>
-          <div>
-            {me.figures.map((card) => (
-              <Card
-                key={card.id}
-                card={card}
-                active={card.id === state.selectedCardId}
-                playable={playableFigures(state, 'white').some((item) => item.id === card.id)}
-                disabled={!canSelectFigureCards}
-                onClick={() => canSelectFigureCards && dispatch({ type: 'select', id: card.id })}
-              />
-            ))}
-          </div>
+            <h2>Your action cards</h2>
+            <div>
+              {me.actions.map((card) => (
+                <Card key={card.id} card={card} playable={playableAction(state, card)} onClick={() => active && act(card)} />
+              ))}
+            </div>
 
-          <h2>Your action cards</h2>
-          <div>
-            {me.actions.map((card) => (
-              <Card key={card.id} card={card} playable={playableAction(state, card)} onClick={() => active && act(card)} />
-            ))}
-          </div>
+            <div className="targets">
+              <label>
+                Reinforce square <input data-reinforce placeholder="e2" />
+              </label>
+              <label>
+                Block square <input data-block placeholder="e7" />
+              </label>
+            </div>
+          </section>
 
-          <div className="targets">
-            <label>
-              Reinforce square <input data-reinforce placeholder="e2" />
-            </label>
-            <label>
-              Block square <input data-block placeholder="e7" />
-            </label>
-          </div>
-        </section>
+          {canEndWithoutMove && (
+            <div className="turn-actions">
+              <button className="end" onClick={() => dispatch({ type: 'end' })}>
+                End turn
+              </button>
+            </div>
+          )}
+        </div>
 
         {state.message && <p className="message">{state.message}</p>}
         {state.result && (

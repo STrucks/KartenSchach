@@ -131,7 +131,15 @@ aside {
   pointer-events: none;
 }
 
+.player-panel {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
 .hand {
+  flex: 1 1 auto;
+  min-width: 0;
   padding: 12px;
   background: #fff;
   border-radius: 6px;
@@ -209,12 +217,13 @@ aside {
 
 .turn-actions {
   display: flex;
+  flex: 0 0 150px;
   justify-content: flex-end;
-  margin: 4px 0 10px;
+  padding-top: 0;
 }
 
 .end {
-  min-width: 142px;
+  width: 142px;
   padding: 13px 18px;
   background: #9a521e;
   box-shadow: 0 3px 10px #0002;
@@ -290,6 +299,20 @@ aside {
 
   .targets {
     flex-wrap: wrap;
+  }
+
+  .player-panel {
+    flex-direction: column;
+  }
+
+  .hand,
+  .turn-actions {
+    width: 100%;
+  }
+
+  .turn-actions {
+    order: -1;
+    flex-basis: auto;
   }
 
   .card {
