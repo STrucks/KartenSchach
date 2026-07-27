@@ -23,6 +23,8 @@ import {
   skipFigureMove,
   useAction,
 } from './engine'
+import OnlineGame from './OnlineGame'
+import type { CreateGameResponse } from './onlineTypes'
 import './app.css'
 
 const random = seeded(Date.now())
@@ -337,7 +339,9 @@ function App() {
   const [drawing, setDrawing] = useState(false)
   const [pendingAction, setPendingAction] = useState<PendingAction>()
   const [openActionInfoId, setOpenActionInfoId] = useState<string>()
+  const [onlineCreating, setOnlineCreating] = useState(false)
   const agent = useMemo(() => new RandomAgent(), [])
+  const onlineRoomId = window.location.pathname.match(/^\/online\/([A-Za-z0-9]+)$/)?.[1]
 
   useEffect(() => {
     if (!openActionInfoId) return
@@ -372,12 +376,24 @@ function App() {
     return () => clearTimeout(timer)
   }, [state, agent])
 
+  if (onlineRoomId) return <OnlineGame roomId={onlineRoomId} />
+
   if (!state) {
+    const createOnlineGame = async () => {
+      setOnlineCreating(true)
+      const response = await fetch('/api/games', { method: 'POST' })
+      const game = (await response.json()) as CreateGameResponse
+      window.location.href = game.playUrl
+    }
+
     return (
       <main className="start">
         <h1>Card Chess</h1>
         <p>Capture the opposing king. Move pieces only with matching cards.</p>
         <button onClick={() => dispatch({ type: 'start' })}>Start game</button>
+        <button onClick={createOnlineGame} disabled={onlineCreating}>
+          {onlineCreating ? 'Creating online game...' : 'Create online game'}
+        </button>
         <button className="quiet" onClick={() => setHelp(true)}>
           Rules
         </button>

@@ -12,6 +12,7 @@ coverage/
 npm-debug.log*
 
 # Local tooling
+.wrangler/
 .idea/
 .vscode/
 .venv/
