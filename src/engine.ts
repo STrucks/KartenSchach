@@ -38,9 +38,10 @@ const actionText: Record<ActionCardType, [string, string]> = {
   block: ['Block piece', 'Choose an opposing piece that cannot move on its next turn.']
 }
 export { actionText }
+const activeActionTypes: ActionCardType[] = ['supply', 'exchange', 'spy', 'trade', 'double']
 const draw=<T,>(d:{draw:T[];discard:T[]},r:RandomSource):[T|undefined,{draw:T[];discard:T[]}]=>{let draw=[...d.draw],discard=[...d.discard];if(!draw.length&&discard.length){draw=[...discard].sort(()=>r.next()-.5);discard=[]}const card=draw.pop();return [card,{draw,discard}]}
 const makeFigures=()=>{const x:FigureCard[]=[];for(const [t,n] of Object.entries({pawn:18,knight:8,bishop:8,rook:6,queen:4,king:4,joker:8})as [FigureCardType,number][])for(let i=0;i<n;i++)x.push({id:id(),kind:'figure',type:t});return x}
-const makeActions=()=>Object.keys(actionText).flatMap(t=>Array.from({length:4},()=>({id:id(),kind:'action' as const,type:t as ActionCardType})))
+const makeActions=()=>activeActionTypes.flatMap(t=>Array.from({length:4},()=>({id:id(),kind:'action' as const,type:t})))
 export const newGame=(r=seeded()):GameState=>{const start=(color:PlayerColor)=>({color,figures:['pawn','pawn','pawn','knight','bishop','joker'].map(type=>({id:id(),kind:'figure' as const,type:type as FigureCardType})),actions:[],actionLocked:false});return {board:initialBoard(),players:{white:start('white'),black:start('black')},figures:{draw:makeFigures().sort(()=>r.next()-.5),discard:[]},actions:{draw:makeActions().sort(()=>r.next()-.5),discard:[]},current:'white',phase:'start',turn:1}}
 export const beginTurn=(s:GameState,r:RandomSource):GameState=>{
  if(s.result)return s
