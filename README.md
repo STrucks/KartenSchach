@@ -116,10 +116,9 @@ Cloudflare Workers also deploy automatically from GitHub Actions on pushes to `m
 Settings -> Secrets and variables -> Actions -> New repository secret
 ```
 
-Required secrets:
+Required secret:
 
 ```text
-CLOUDFLARE_ACCOUNT_ID=a226f21979b53f5b46d5bf8cdd70ae3d
 CLOUDFLARE_API_TOKEN=<Cloudflare API token with Workers Scripts edit permission>
 ```
 

@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "kartenschach",
+  "account_id": "a226f21979b53f5b46d5bf8cdd70ae3d",
   "main": "worker/index.ts",
   "compatibility_date": "2026-07-27",
   "assets": {
