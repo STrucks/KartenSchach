@@ -28,7 +28,7 @@ export const unusable=(b:Board,color:PlayerColor,c:FigureCard)=>c.type!=='joker'
 export const playableFigures=(s:GameState,color=s.current)=>s.players[color].figures.filter(c=>cardMoves(s.board,color,c.type).length>0)
 export const emergencyAllowed=(s:GameState,color=s.current)=>playableFigures(s,color).length===0&&s.players[color].figures.length>=2&&allMoves(s.board,color).length>0
 const actionText: Record<ActionCardType, [string, string]> = {
-  supply: ['Supply', 'Draw two figure cards, then take your normal move.'],
+  supply: ['Supply', 'Draw one figure card, then take your normal move.'],
   exchange: ['Exchange', 'Discard up to three figure cards and draw the same number.'],
   spy: ['Spy', 'View the opponent hand, then take your normal move.'],
   trade: ['Trade', 'Take a random figure card from the opponent, then give one back.'],
@@ -38,10 +38,10 @@ const actionText: Record<ActionCardType, [string, string]> = {
   block: ['Block piece', 'Choose an opposing piece that cannot move on its next turn.']
 }
 export { actionText }
-const activeActionTypes: ActionCardType[] = ['supply', 'exchange', 'spy', 'trade', 'double']
+const activeActionCounts: Partial<Record<ActionCardType, number>> = { supply: 8, exchange: 5, spy: 5, trade: 6, double: 3 }
 const draw=<T,>(d:{draw:T[];discard:T[]},r:RandomSource):[T|undefined,{draw:T[];discard:T[]}]=>{let draw=[...d.draw],discard=[...d.discard];if(!draw.length&&discard.length){draw=[...discard].sort(()=>r.next()-.5);discard=[]}const card=draw.pop();return [card,{draw,discard}]}
 const makeFigures=()=>{const x:FigureCard[]=[];for(const [t,n] of Object.entries({pawn:18,knight:8,bishop:8,rook:6,queen:4,king:4,joker:8})as [FigureCardType,number][])for(let i=0;i<n;i++)x.push({id:id(),kind:'figure',type:t});return x}
-const makeActions=()=>activeActionTypes.flatMap(t=>Array.from({length:4},()=>({id:id(),kind:'action' as const,type:t})))
+const makeActions=()=>Object.entries(activeActionCounts).flatMap(([t,n])=>Array.from({length:n},()=>({id:id(),kind:'action' as const,type:t as ActionCardType})))
 export const newGame=(r=seeded()):GameState=>{const start=(color:PlayerColor)=>({color,figures:['pawn','pawn','pawn','knight','bishop','joker'].map(type=>({id:id(),kind:'figure' as const,type:type as FigureCardType})),actions:[],actionLocked:false});return {board:initialBoard(),players:{white:start('white'),black:start('black')},figures:{draw:makeFigures().sort(()=>r.next()-.5),discard:[]},actions:{draw:makeActions().sort(()=>r.next()-.5),discard:[]},current:'white',phase:'start',turn:1}}
 export const beginTurn=(s:GameState,r:RandomSource):GameState=>{
  if(s.result)return s
@@ -68,7 +68,7 @@ export const useAction=(s:GameState,id:string,r:RandomSource,target?:string):Gam
  let figures=s.figures, players={...s.players,[s.current]:{...me,actions:me.actions.filter(a=>a.id!==id)}}
  const take=()=>{const [f,d]=draw(figures,r);figures=d;if(f)players={...players,[s.current]:{...players[s.current],figures:[...players[s.current].figures,f]}}}
  let board=s.board, effect=s.activeEffect, message:string|undefined
- if(c.type==='supply'){take();take()}
+ if(c.type==='supply')take()
  if(c.type==='exchange'){const ids=[...new Set((target??'').split(',').filter(Boolean))];const cards=ids.map(id=>me.figures.find(x=>x.id===id)).filter((x):x is FigureCard=>!!x);if(!cards.length||cards.length>3||cards.length!==ids.length)return {...s,message:'Choose one to three figure cards to exchange.'};players={...players,[s.current]:{...players[s.current],figures:me.figures.filter(x=>!ids.includes(x.id))}};figures={...figures,discard:[...figures.discard,...cards]};cards.forEach(take)}
  if(c.type==='spy')message=`Opponent figure cards: ${s.players[other(s.current)].figures.map(x=>x.type).join(', ')}`
  if(c.type==='trade'){const foe=other(s.current),[offerId,giveId]=(target??'').split(':');const foeCards=players[foe].figures;const got=foeCards.find(x=>x.id===offerId);const give=me.figures.find(x=>x.id===giveId);if(!got||!give)return {...s,message:'Choose one of your figure cards to complete the trade.'};players={...players,[foe]:{...players[foe],figures:[...foeCards.filter(x=>x.id!==got.id),give]},[s.current]:{...players[s.current],figures:[...me.figures.filter(x=>x.id!==give.id),got]}}}

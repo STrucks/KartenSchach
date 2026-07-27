@@ -423,7 +423,7 @@ Ist der Action-Kartenstapel leer, wird der Action-Karten-Ablagestapel gemischt u
 
 ## 21.1 Nachschub
 
-**Effekt:** Ziehe zwei Figurenkarten vom gemeinsamen Figurenkartenstapel.
+**Effekt:** Ziehe eine Figurenkarte vom gemeinsamen Figurenkartenstapel.
 
 Die gezogenen Karten werden auf die Hand genommen.
 
