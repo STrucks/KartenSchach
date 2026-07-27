@@ -110,6 +110,27 @@ Then deploy the Worker, static assets, and Durable Object migration:
 npm run worker:deploy
 ```
 
+Cloudflare Workers also deploy automatically from GitHub Actions on pushes to `main`. Add these repository secrets in GitHub before relying on the workflow:
+
+```text
+Settings -> Secrets and variables -> Actions -> New repository secret
+```
+
+Required secrets:
+
+```text
+CLOUDFLARE_ACCOUNT_ID=a226f21979b53f5b46d5bf8cdd70ae3d
+CLOUDFLARE_API_TOKEN=<Cloudflare API token with Workers Scripts edit permission>
+```
+
+Create the API token in Cloudflare:
+
+```text
+Cloudflare Dashboard -> My Profile -> API Tokens -> Create Token
+```
+
+Use the Cloudflare Workers edit template if available, or create a custom token with Workers Scripts edit access for this account. Keep the token private; GitHub stores it encrypted as a secret.
+
 Useful Worker commands:
 
 ```powershell
